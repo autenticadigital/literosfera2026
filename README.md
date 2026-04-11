@@ -23,6 +23,7 @@ Literosfera é um aplicativo web premium desenvolvido para facilitar o acesso à
 ## 📝 Changelog (v1.1.0)
 - **Suporte a PDF**: Adicionado campo `pdfUrl` no banco de dados e no formulário de edição.
 - **Botões de Ação**: Implementação dos botões "Ler Agora" e "Baixar PDF" na modal de detalhes.
+- **Sistema de Curtidas**: Agora os alunos podem "curtir" suas obras favoritas com contagem em tempo real.
 - **Seed de Dados**: Importação inicial de 10 clássicos (1984, Dom Casmurro, etc.) com capas e sinopses.
 - **UI Pro Max**: Ajustes de animação em modais e cards para maior fluidez.
 
