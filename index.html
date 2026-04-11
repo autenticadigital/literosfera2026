@@ -210,6 +210,36 @@
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
         .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
 
+        /* LANDING LOGIN */
+        .login-hero {
+            position: fixed; inset: 0; z-index: 1000;
+            background: url('bg_landing.png') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .login-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(30,58,138,0.7), rgba(15,23,42,0.5));
+        }
+        .login-glass-card {
+            position: relative; z-index: 1001; width: 100%; max-width: 420px;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 2rem;
+            padding: 2.5rem 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            color: white; animation: fadeInScale 0.5s ease-out;
+        }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .login-glass-card .logo { color: white; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem; }
+        .login-glass-card .page-title { color: white; text-align: center; font-size: 1.8rem; }
+        .login-glass-card .page-subtitle { color: rgba(255,255,255,0.8); text-align: center; margin-bottom: 2rem; }
+        .login-glass-card label { color: white; }
+        .login-glass-card input, .login-glass-card select { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white; }
+        .login-glass-card input::placeholder { color: rgba(255,255,255,0.5); }
+        .login-glass-card input:focus, .login-glass-card select:focus { background: rgba(255,255,255,0.2); border-color: var(--accent); }
+        .login-glass-card .btn-primary { background: var(--accent); color: #713f12; border: none; font-size: 1.1rem; height: 55px; }
+        .login-glass-card .btn-primary:hover { background: white; transform: translateY(-2px); }
+
     </style>
 </head>
 <body>
@@ -244,31 +274,40 @@
     </header>
 
     <main>
-        <!-- TELA DE LOGIN -->
-        <section id="view-login" class="card" style="margin-top: 2rem;">
-            <div class="page-title" style="text-align: center; margin-bottom: 0.5rem;">Olá, leitor! 👋</div>
-            <div class="page-subtitle" style="text-align: center;">Identifique-se para acessar a estante.</div>
+        <!-- TELA DE LOGIN (LANDING) -->
+        <section id="view-login" class="login-hero">
+            <div class="login-glass-card">
+                <div class="logo">
+                    <span style="font-size: 2rem;">📘</span> LITERO<span class="highlight" style="color:var(--accent);">SFERA</span>
+                </div>
+                <h1 class="page-title">Sua biblioteca digital premium</h1>
+                <p class="page-subtitle">Acesse o acervo, participe dos debates e mergulhe em novas histórias.</p>
 
-            <div class="form-group">
-                <label>Seu Nome Completo</label>
-                <input type="text" id="login-name" placeholder="Ex: Carlos Sergio...">
+                <div class="form-group">
+                    <label>Seu Nome Completo</label>
+                    <input type="text" id="login-name" placeholder="Digite seu nome...">
+                </div>
+                <div class="form-group">
+                    <label>Seu Perfil</label>
+                    <select id="login-role" onchange="toggleAdminPass()">
+                        <option value="student">Aluno(a)</option>
+                        <option value="admin">Professor(a) (Admin)</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="login-pass-group">
+                    <label>Senha do Professor</label>
+                    <input type="password" id="login-pass" placeholder="Senha secreta...">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Explorar o Acervo</button>
+                
+                <p style="text-align:center; font-size:0.75rem; color:rgba(255,255,255,0.6); margin-top:1.5rem;">
+                    Desenvolvido com ❤️ em Salinas da Margarida
+                </p>
             </div>
-            <div class="form-group">
-                <label>Seu Perfil</label>
-                <select id="login-role" onchange="toggleAdminPass()">
-                    <option value="student">Aluno(a)</option>
-                    <option value="admin">Professor(a) (Admin)</option>
-                </select>
-            </div>
-            <div class="form-group hidden" id="login-pass-group">
-                <label>Senha do Professor</label>
-                <input type="password" id="login-pass" placeholder="Apenas professores">
-            </div>
-            <button class="btn btn-primary" onclick="login()">Entrar no Acervo</button>
         </section>
 
         <!-- LOADER GERAL -->
-        <div id="app-loader" class="loader hidden"></div>
+        <div id="app-loader" class="loader hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2000;"></div>
 
         <!-- TELA PRINCIPAL (LIVROS E DASHBOARD) -->
         <section id="view-home" class="hidden">
