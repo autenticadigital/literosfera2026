@@ -127,8 +127,10 @@
         .book-cover { width: 100%; height: 100%; object-fit: cover; }
         .book-badge { position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.7); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(4px); }
         .book-info { padding: 0.75rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .book-title { font-size: 0.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.25rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .book-title { font-size: 0.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .book-author { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .book-badge.likes { top: auto; bottom: 0.5rem; background: rgba(239, 68, 68, 0.8); }
         
         .admin-controls { display: flex; gap: 0.3rem; margin-top: 0.5rem; border-top: 1px solid var(--border); padding-top: 0.5rem; }
 
@@ -353,7 +355,10 @@
                 <a id="btn-download" class="btn btn-secondary" href="#" target="_blank" download>⬇️ Baixar PDF</a>
             </div>
 
-            <div class="section-title">Comentários e Debates</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin: 1.5rem 0 1rem; padding-bottom:0.5rem; border-bottom: 2px solid var(--surface-hover);">
+                <div class="section-title" style="margin:0; border:none;">Comentários e Debates</div>
+                <button id="btn-like" onclick="toggleLike()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; transition:transform 0.2s;">🤍</button>
+            </div>
             <div id="det-comments"></div>
             
             <div style="margin-top: 1.5rem;">
@@ -606,6 +611,7 @@
                     <div class="book-cover-wrap">
                         ${b.cover ? `<img src="${b.cover}" class="book-cover">` : `<span style="font-size:2rem">📖</span>`}
                         <div class="book-badge">💬 ${commentsCount}</div>
+                        <div class="book-badge likes">❤️ ${Object.keys(b.likes || {}).length}</div>
                     </div>
                     <div class="book-info">
                         <div>
@@ -722,7 +728,31 @@
                 html = parentComments.map(c => renderCommentNode(c, commentsBase, 0)).join('');
             }
             document.getElementById('det-comments').innerHTML = html;
+            
+            // Botão Curtir Estado
+            const btnLike = document.getElementById('btn-like');
+            const hasLiked = b.likes && b.likes[currentUser.id];
+            btnLike.textContent = hasLiked ? '❤️' : '🤍';
+            btnLike.title = hasLiked ? 'Remover curtida' : 'Curtir este livro';
+            
             openModal('modal-details');
+        }
+
+        function toggleLike() {
+            if(!activeBookId || !currentUser) return;
+            const b = data.books[activeBookId];
+            const hasLiked = b.likes && b.likes[currentUser.id];
+            
+            const ref = db.ref(`books/${activeBookId}/likes/${currentUser.id}`);
+            if(hasLiked) {
+                ref.remove();
+            } else {
+                ref.set(true);
+                // Pequena animação no botão
+                const btn = document.getElementById('btn-like');
+                btn.style.transform = 'scale(1.4)';
+                setTimeout(() => btn.style.transform = 'scale(1)', 200);
+            }
         }
 
         function readOnline() {
