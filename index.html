@@ -348,6 +348,11 @@
                 </div>
             </div>
 
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-primary" id="btn-read-online" onclick="readOnline()">📖 Ler Agora</button>
+                <a id="btn-download" class="btn btn-secondary" href="#" target="_blank" download>⬇️ Baixar PDF</a>
+            </div>
+
             <div class="section-title">Comentários e Debates</div>
             <div id="det-comments"></div>
             
@@ -376,7 +381,11 @@
                 <textarea id="book-desc" rows="3"></textarea>
             </div>
             <div class="form-group">
-                <label>URl da Imagem da Capa (Opcional)</label>
+                <label>URL do PDF ou Link para Leitura</label>
+                <input type="text" id="book-pdf">
+            </div>
+            <div class="form-group">
+                <label>URL da Imagem da Capa (Opcional)</label>
                 <input type="text" id="book-cover">
             </div>
             <button class="btn btn-primary" onclick="saveBook()">💾 Salvar Obra</button>
@@ -616,6 +625,7 @@
             document.getElementById('book-title').value = b.title;
             document.getElementById('book-author').value = b.author;
             document.getElementById('book-desc').value = b.description;
+            document.getElementById('book-pdf').value = b.pdfUrl || '';
             document.getElementById('book-cover').value = b.cover || '';
             openModal('modal-book');
         }
@@ -625,11 +635,12 @@
             const title = document.getElementById('book-title').value.trim();
             const author = document.getElementById('book-author').value.trim();
             const description = document.getElementById('book-desc').value.trim();
+            const pdfUrl = document.getElementById('book-pdf').value.trim();
             const cover = document.getElementById('book-cover').value.trim();
 
             if(!title || !author) return alert('Título e Autor obrigatórios');
 
-            const book = { id, title, author, description, cover };
+            const book = { id, title, author, description, pdfUrl, cover };
             
             // Se for edit mantem os topics
             if(data.books[id] && data.books[id].topics) book.topics = data.books[id].topics;
@@ -640,6 +651,7 @@
                 document.getElementById('book-title').value = '';
                 document.getElementById('book-author').value = '';
                 document.getElementById('book-desc').value = '';
+                document.getElementById('book-pdf').value = '';
                 document.getElementById('book-cover').value = '';
             });
         }
@@ -664,6 +676,19 @@
             document.getElementById('det-title').textContent = b.title;
             document.getElementById('det-author').textContent = b.author;
             document.getElementById('det-desc').textContent = b.description;
+
+            // Botoes de acao
+            const btnRead = document.getElementById('btn-read-online');
+            const btnDown = document.getElementById('btn-download');
+
+            if(b.pdfUrl) {
+                btnRead.classList.remove('hidden');
+                btnDown.classList.remove('hidden');
+                btnDown.href = b.pdfUrl;
+            } else {
+                btnRead.classList.add('hidden');
+                btnDown.classList.add('hidden');
+            }
 
             // Topics
             const topicsEl = document.getElementById('det-topics');
@@ -698,6 +723,24 @@
             }
             document.getElementById('det-comments').innerHTML = html;
             openModal('modal-details');
+        }
+
+        function readOnline() {
+            if(!activeBookId) return;
+            const b = data.books[activeBookId];
+            if(b && b.pdfUrl) {
+                // Se for link do google drive, tentamos abrir no preview
+                let url = b.pdfUrl;
+                if(url.includes('drive.google.com')){
+                    if(url.includes('/view')) url = url.replace('/view', '/preview');
+                    else if(url.includes('?usp=drive_link')) url = url.replace('?usp=drive_link', '');
+                    // Adiciona preview se não tiver
+                    if(!url.includes('/preview') && url.includes('/file/d/')){
+                         url += '/preview';
+                    }
+                }
+                window.open(url, '_blank');
+            }
         }
 
         function renderCommentNode(comment, allComments, level) {
