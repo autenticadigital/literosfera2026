@@ -4,10 +4,7 @@ Literosfera é um aplicativo web premium desenvolvido para facilitar o acesso à
 
 ## 🚀 Funcionalidades
 - **Acervo Inteligente**: Organização de livros por título e autor.
-- **Leitura Online**: Integração com Google Drive Preview para leitura imediata.
-- **Download Direto**: Botão para download do PDF da obra.
-- **Fórum de Discussão**: Sistema de comentários e tópicos de debate por livro.
-- **Painel Administrativo**: Gestão de obras, tópicos e moderação de comentários.
+- **Smart Ebook Viewer**: Leitor de PDF integrado em tela cheia com suporte a links do GitHub e preview do Google Drive.
 - **PWA Ready**: Interface responsiva e otimizada para dispositivos móveis.
 
 ## 🛠️ Stack Tecnológica
@@ -20,12 +17,13 @@ Literosfera é um aplicativo web premium desenvolvido para facilitar o acesso à
 2. Abra o `index.html` em qualquer navegador moderno.
 3. Para acesso administrativo, utilize a senha configurada no código (`januesc025`).
 
-## 📝 Changelog (v1.1.0)
-- **Suporte a PDF**: Adicionado campo `pdfUrl` no banco de dados e no formulário de edição.
-- **Botões de Ação**: Implementação dos botões "Ler Agora" e "Baixar PDF" na modal de detalhes.
-- **Sistema de Curtidas**: Agora os alunos podem "curtir" suas obras favoritas com contagem em tempo real.
-- **Seed de Dados**: Importação inicial de 10 clássicos (1984, Dom Casmurro, etc.) com capas e sinopses.
 - **UI Pro Max**: Ajustes de animação em modais e cards para maior fluidez.
+
+## 📝 Changelog (v1.2.0)
+- **Smart Ebook Reader**: Implementação de visualizador de PDF interno em tela cheia.
+- **GitHub Compatibility**: Suporte automático para links do GitHub (conversão para raw).
+- **Aviso de Bloqueio**: Sistema de detecção de links do Google Drive com aviso sobre restrições de preview.
+- **Correção de Links**: Melhoria na detecção de pastas vs arquivos para leitura online.
 
 ---
 Desenvolvido por **Antigravity** para **Sérgio (Vibe Coder)**.
