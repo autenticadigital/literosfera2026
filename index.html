@@ -416,9 +416,14 @@
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
+            <div id="action-buttons-container" style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
                 <button class="btn btn-primary" id="btn-read-online" onclick="readOnline()">📖 Ler Agora</button>
                 <a id="btn-download" class="btn btn-secondary" href="#" target="_blank" download>⬇️ Baixar PDF</a>
+            </div>
+            
+            <div id="no-pdf-notice" class="hidden" style="padding: 1rem; background: #f8fafc; border: 1px dashed var(--border); border-radius: var(--radius-sm); margin-bottom: 1.5rem; text-align: center;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Esta obra ainda não possui link para leitura digital.</p>
+                <button class="btn btn-secondary btn-sm hidden" id="btn-admin-add-pdf" onclick="closeModal('modal-details'); prepareEditBook(activeBookId)">➕ Cadastrar Link de Leitura</button>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin: 1.5rem 0 1rem; padding-bottom:0.5rem; border-bottom: 2px solid var(--surface-hover);">
@@ -800,14 +805,24 @@
             // Botoes de acao
             const btnRead = document.getElementById('btn-read-online');
             const btnDown = document.getElementById('btn-download');
+            const actionContainer = document.getElementById('action-buttons-container');
+            const noPdfNotice = document.getElementById('no-pdf-notice');
+            const btnAdminAdd = document.getElementById('btn-admin-add-pdf');
 
-            if(b.pdfUrl) {
+            if(b.pdfUrl && b.pdfUrl.trim() !== '') {
+                actionContainer.classList.remove('hidden');
+                noPdfNotice.classList.add('hidden');
                 btnRead.classList.remove('hidden');
                 btnDown.classList.remove('hidden');
                 btnDown.href = b.pdfUrl;
             } else {
-                btnRead.classList.add('hidden');
-                btnDown.classList.add('hidden');
+                actionContainer.classList.add('hidden');
+                noPdfNotice.classList.remove('hidden');
+                if(currentUser.role === 'admin') {
+                    btnAdminAdd.classList.remove('hidden');
+                } else {
+                    btnAdminAdd.classList.add('hidden');
+                }
             }
 
             // Topics
