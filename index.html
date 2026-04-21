@@ -18,23 +18,42 @@
 
     <style>
         :root {
-            --bg: #f8f9fc;
+            /* Light Theme */
+            --bg: #fdfdfd;
             --surface: #ffffff;
-            --surface-hover: #f1f5f9;
-            --primary: #1e3a8a; /* Azul Escuro */
-            --primary-mid: #2563eb; /* Azul Royal */
-            --accent: #facc15; /* Amarelo Logo */
+            --surface-hover: #f8fafc;
+            --primary: #1e3a8a;
+            --primary-mid: #2563eb;
+            --primary-light: #eff6ff;
+            --accent: #facc15;
             --accent-dark: #eab308;
             --danger: #ef4444;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --radius-lg: 16px;
-            --radius: 12px;
-            --radius-sm: 8px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --shadow-hover: 0 10px 24px rgba(30,58,138,0.12);
+            --radius-lg: 24px;
+            --radius: 16px;
+            --radius-sm: 12px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+            --shadow-hover: 0 20px 25px -5px rgba(30,58,138,0.1), 0 10px 10px -5px rgba(30,58,138,0.04);
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --primary: #60a5fa;
+            --primary-mid: #3b82f6;
+            --primary-light: #1e3a8a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            --glass: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,6 +66,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* TIPOGRAFIA E COMPONENTES */
@@ -55,158 +75,182 @@
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
             padding: 0.8rem 1.5rem; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.95rem; 
-            font-weight: 600; cursor: pointer; border: none; transition: all 0.2s ease-in-out;
+            font-weight: 600; cursor: pointer; border: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%; white-space: nowrap; -webkit-tap-highlight-color: transparent;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(30,58,138,0.2); }
-        .btn-primary:hover { background: var(--primary-mid); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
-        .btn-secondary { background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-        .btn-secondary:hover { background: var(--surface-hover); }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(30,58,138,0.2); }
+        .btn-primary:hover { background: var(--primary-mid); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(37,99,235,0.3); }
+        .btn-secondary { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .btn-secondary:hover { background: var(--surface-hover); border-color: var(--primary-mid); }
         .btn-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
         .btn-danger:hover { background: #fecaca; }
         .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; }
         .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+        }
+
         input, select, textarea {
             width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm);
-            font-family: inherit; font-size: 0.95rem; color: var(--text-main); background: #f8fafc;
+            font-family: inherit; font-size: 0.95rem; color: var(--text-main); background: var(--surface);
             transition: all 0.2s; outline: none;
         }
         input:focus, select:focus, textarea:focus {
-            border-color: var(--primary-mid); background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+            border-color: var(--primary-mid); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
         }
 
-        /* HEADER HEADER */
+        /* HEADER */
         header {
-            background: var(--surface);
-            color: var(--text-main);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--border);
         }
         .header-inner {
-            max-width: 600px; margin: 0 auto; padding: 1rem 1.25rem;
+            max-width: 800px; margin: 0 auto; padding: 0.75rem 1.25rem;
             display: flex; align-items: center; justify-content: space-between;
         }
         .logo {
-            font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em;
+            font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em;
             display: flex; align-items: center; gap: 0.4rem; color: var(--primary);
         }
         .logo span.highlight { color: var(--accent-dark); font-family: 'Inter', sans-serif; font-weight: 800; font-style: normal; }
         
-        .header-actions { display: flex; gap: 0.5rem; align-items: center; }
-        .header-btn { background: none; border: none; font-size: 1.3rem; padding: 0.5rem; border-radius: 50%; color: var(--text-main); cursor: pointer; transition: background 0.2s; }
+        .header-actions { display: flex; gap: 0.25rem; align-items: center; }
+        .header-btn { background: none; border: none; font-size: 1.2rem; padding: 0.5rem; border-radius: 50%; color: var(--text-main); cursor: pointer; transition: background 0.2s; }
         .header-btn:hover { background: var(--surface-hover); }
 
-        #search-bar { display: none; padding: 0.8rem 1.25rem; background: var(--surface); border-top: 1px solid var(--border); }
-        #search-bar.open { display: block; animation: slideDown 0.2s ease-out; }
+        #search-bar { display: none; padding: 0.8rem 1.25rem; background: var(--surface); border-top: 1px solid var(--border); max-width: 800px; margin: 0 auto; width: 100%; }
+        #search-bar.open { display: block; animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* LAYOUT PRINCIPAL */
-        main { flex: 1; width: 100%; max-width: 600px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
-        .breadcrumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; display: flex; gap: 0.4rem; align-items: center; }
-        .breadcrumb a { color: var(--primary-mid); text-decoration: none; font-weight: 500; }
-        .page-title { font-size: 1.4rem; color: var(--text-main); margin-bottom: 0.3rem; }
-        .page-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        main { flex: 1; width: 100%; max-width: 800px; margin: 0 auto; padding: 1rem 1.25rem 5rem; }
+        
+        /* SHELVES (ESTANTES) */
+        .shelf { margin-bottom: 2.5rem; }
+        .shelf-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+        .shelf-title a { font-size: 0.8rem; color: var(--primary-mid); text-decoration: none; font-weight: 600; }
+        
+        .shelf-grid {
+            display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem 0 1.5rem;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .shelf-grid::-webkit-scrollbar { display: none; }
 
-        /* LOGIN SECTON */
-        .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; border: 1px solid rgba(0,0,0,0.03); }
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem; }
-
-        /* CARDS DE LIVRO */
-        .filters { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: none; }
-        .filters::-webkit-scrollbar { display: none; }
-        .filter-btn { padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 2rem; font-size: 0.85rem; font-weight: 500; white-space: nowrap; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
-        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .books-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        /* CARDS DE LIVRO - KAVITA STYLE */
         .book-card {
-            background: var(--surface); border-radius: var(--radius); overflow: hidden;
-            box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 140px; max-width: 140px;
+            background: transparent; border-radius: var(--radius-sm);
+            cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex; flex-direction: column; position: relative;
         }
-        .book-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-        .book-cover-wrap { width: 100%; aspect-ratio: 2/3; position: relative; background: #e2e8f0; display:flex; align-items:center; justify-content:center; }
-        .book-cover { width: 100%; height: 100%; object-fit: cover; }
-        .book-badge { position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.7); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(4px); }
-        .book-info { padding: 0.75rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .book-title { font-size: 0.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.25rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .book-author { font-size: 0.8rem; color: var(--text-muted); }
-        
-        .book-badge.likes { position: relative; top: auto; left: auto; background: none; color: #ef4444; padding: 0; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.2rem; backdrop-filter: none; box-shadow: none; font-weight: 700; }
-        
-        .admin-controls { display: flex; gap: 0.3rem; margin-top: 0.5rem; border-top: 1px solid var(--border); padding-top: 0.5rem; }
-
-        /* PARTICIPAÇÃO / PAINEL */
-        .dash-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; }
-        .dash-card h3 { font-size: 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
-        .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
-        .student-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
-        .student-item:last-child { border-bottom: none; }
-        .badge { background: #e0e7ff; color: var(--primary-mid); padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 700; }
-
-        /* MODAIS */
-        .modal {
-            display: none; position: fixed; inset: 0; z-index: 200; background: rgba(15,23,42,0.6);
-            backdrop-filter: blur(4px); align-items: flex-end; justify-content: center;
+        .book-card:hover { transform: scale(1.05); }
+        .book-cover-wrap {
+            width: 100%; aspect-ratio: 2/3; position: relative;
+            background: var(--surface-hover); border-radius: var(--radius-sm);
+            overflow: hidden; box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-        .modal.open { display: flex; animation: fadeIn 0.2s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .book-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .book-card:hover .book-cover { transform: scale(1.1); }
+        
+        .book-badge {
+            position: absolute; top: 0.5rem; right: 0.5rem;
+            background: rgba(0,0,0,0.6); color: white; padding: 0.2rem 0.5rem;
+            border-radius: 6px; font-size: 0.65rem; font-weight: 700;
+            backdrop-filter: blur(4px); z-index: 2;
+        }
+        
+        .book-info { padding: 0.75rem 0.2rem; }
+        .book-title {
+            font-size: 0.85rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.2rem;
+            display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; color: var(--text-main);
+        }
+        .book-author { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* GRID VERSÃO LISTA */
+        .books-grid-full {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1.5rem 1rem;
+        }
+
+        /* FILTROS */
+        .filters { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem 0 1.5rem; scrollbar-width: none; }
+        .filter-btn {
+            padding: 0.6rem 1.2rem; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 2rem; font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+            color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+        }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(30,58,138,0.2); }
+
+        /* DASHBOARD */
+        .dash-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+        .stat-value { font-size: 3rem; font-weight: 800; color: var(--primary); line-height: 1; }
+
+        /* MODAIS PREMIUM */
+        .modal {
+            display: none; position: fixed; inset: 0; z-index: 200; background: rgba(15,23,42,0.4);
+            backdrop-filter: blur(8px); align-items: flex-end; justify-content: center;
+            transition: opacity 0.3s;
+        }
+        .modal.open { display: flex; }
         .modal-sheet {
-            background: var(--surface); width: 100%; max-width: 600px; max-height: 90vh;
+            background: var(--surface); width: 100%; max-width: 600px; max-height: 95vh;
             border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow-y: auto;
-            padding: 0 1.25rem 2rem; position: relative; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 0 1.5rem 3rem; position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-handle { width: 40px; height: 5px; background: #cbd5e1; border-radius: 3px; margin: 0.8rem auto 1.5rem; }
-        .close-btn { position: absolute; top: 1rem; right: 1.25rem; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
-        .close-btn:hover { background: #e2e8f0; color: var(--text-main); }
-        
-        .modal-center { align-items: center; padding: 1.25rem; }
-        .modal-center .modal-sheet { border-radius: var(--radius); padding: 1.5rem; max-width: 400px; max-height: 80vh; animation: zoomIn 0.2s; }
-        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-handle { width: 40px; height: 5px; background: var(--border); border-radius: 3px; margin: 1rem auto 1.5rem; }
 
         /* DETALHES DO LIVRO */
-        .detail-header { display: flex; gap: 1.25rem; margin-bottom: 2rem; }
-        .detail-cover { width: 110px; border-radius: var(--radius-sm); box-shadow: var(--shadow); object-fit: cover; aspect-ratio: 2/3; background: #cbd5e1; }
-        .detail-info { flex: 1; }
-        .detail-title { font-size: 1.3rem; font-family: 'Playfair Display', serif; margin-bottom: 0.4rem; line-height: 1.2; }
-        .detail-author { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
-        .detail-desc { font-size: 0.9rem; line-height: 1.6; color: var(--text-main); }
+        .detail-cover-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 200px;
+            background-size: cover; background-position: center;
+            filter: blur(40px) brightness(0.7); opacity: 0.3; z-index: -1;
+        }
+        .detail-header { display: flex; gap: 1.5rem; margin-top: 1rem; position: relative; }
+        .detail-cover { width: 120px; border-radius: var(--radius-sm); box-shadow: var(--shadow-hover); object-fit: cover; aspect-ratio: 2/3; background: #cbd5e1; border: 2px solid white; }
+        .detail-title { font-size: 1.5rem; font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; color: var(--text-main); }
 
-        .section-title { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--surface-hover); }
+        /* VISUALIZADOR DE EBOOK */
+        .modal-viewer {
+            display: none; position: fixed; inset: 0; z-index: 3000; background: #000;
+            flex-direction: column; animation: fadeIn 0.3s;
+        }
+        .viewer-header { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 1rem; display: flex; align-items: center; justify-content: space-between; color: white; }
 
-        /* COMENTÁRIOS */
-        .comment-box { background: var(--surface-hover); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 0.8rem; }
-        .comment-box.reply { margin-left: 1.5rem; border-left: 3px solid var(--accent); }
-        .c-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
-        .c-author { font-weight: 600; font-size: 0.85rem; color: var(--primary); }
-        .c-date { font-size: 0.75rem; color: var(--text-muted); }
-        .c-text { font-size: 0.9rem; line-height: 1.5; color: var(--text-main); margin-bottom: 0.5rem; }
-        .c-actions { display: flex; gap: 0.5rem; }
-        
-        .reply-form-container { margin-top: 0.8rem; display: none; }
+        /* ESTADO VAZIO */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.2; }
 
-        /* DRAWER (MENU) */
-        .drawer { position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100%; background: var(--surface); z-index: 300; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 4px 0 24px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .drawer.open { transform: translateX(0); }
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 299; display: none; backdrop-filter: blur(2px); }
-        .drawer-overlay.open { display: block; animation: fadeIn 0.3s; }
-        .drawer-header { padding: 2rem 1.5rem 1.5rem; background: var(--bg); border-bottom: 1px solid var(--border); }
-        .drawer-greeting { font-size: 0.85rem; color: var(--text-muted); }
-        .drawer-name { font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-top: 0.2rem; }
-        .drawer-role { display: inline-block; background: var(--accent); color: #713f12; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-top: 0.5rem; }
-        .drawer-body { flex: 1; padding: 1rem 0; overflow-y: auto; }
-        .drawer-item { width: 100%; text-align: left; background: none; border: none; padding: 1rem 1.5rem; font-size: 1rem; font-weight: 500; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: background 0.2s; }
-        .drawer-item:hover { background: var(--surface-hover); }
-        .drawer-item i { width: 24px; text-align: center; font-size: 1.2rem; color: var(--text-muted); }
-        .drawer-item.danger { color: var(--danger); margin-top: 1rem; border-top: 1px solid var(--border); }
-        .drawer-item.danger i { color: var(--danger); }
+        /* FLOATING ACTION BUTTON (ADMIN) */
+        .fab {
+            position: fixed; bottom: 2rem; right: 1.5rem; width: 56px; height: 56px;
+            background: var(--primary); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(30,58,138,0.4); z-index: 90;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .fab:hover { transform: scale(1.1) rotate(90deg); background: var(--primary-mid); }
 
         .hidden { display: none !important; }
+        
+        /* DARK MODE TOGGLE BTN */
+        .theme-toggle { font-size: 1.2rem; cursor: pointer; padding: 0.5rem; border-radius: 50%; border: none; background: none; color: var(--text-main); }
+        .theme-toggle:hover { background: var(--surface-hover); }
 
+    </style>
         /* LOADER */
         .loader { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 3rem auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -267,6 +311,19 @@
         .viewer-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
         .btn-raw { background: #92400e; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 0.75rem; }
 
+        /* WEB SEARCH STYLES */
+        .web-search-item {
+            display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border);
+            align-items: center; transition: background 0.2s;
+        }
+        .web-search-item:hover { background: var(--surface-hover); }
+        .web-search-cover { width: 60px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; box-shadow: var(--shadow-sm); background: #eee; }
+        .web-search-info { flex: 1; min-width: 0; }
+        .web-search-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .web-search-author { font-size: 0.8rem; color: var(--text-muted); }
+        .web-search-btn { background: var(--primary-mid); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .web-search-btn:hover { background: var(--primary); }
+
     </style>
 </head>
 <body>
@@ -292,6 +349,7 @@
                 <span style="font-size: 1.4rem;">📘</span> LITERO<span class="highlight">SFERA</span>
             </div>
             <div class="header-actions">
+                <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar Tema">🌓</button>
                 <button class="header-btn" id="btn-searchToggle" onclick="toggleSearch()">🔍</button>
             </div>
         </div>
@@ -338,29 +396,42 @@
 
         <!-- TELA PRINCIPAL (LIVROS E DASHBOARD) -->
         <section id="view-home" class="hidden">
-            <div class="breadcrumb" style="display: none;" id="breadcrumb">
-                <a href="#" onclick="showHome(); return false;">Início</a> <span id="breadcrumb-current"></span>
-            </div>
-
             <!-- FILTROS / ABAS -->
             <div class="filters">
-                <button class="filter-btn active" id="tab-acervo" onclick="switchTab('acervo')">📚 Acervo</button>
+                <button class="filter-btn active" id="tab-acervo" onclick="switchTab('acervo')">📚 Início</button>
+                <button class="filter-btn" id="tab-todos" onclick="switchTab('todos')">📖 Todo Acervo</button>
                 <button class="filter-btn" id="tab-painel" onclick="switchTab('painel')">📊 Meu Painel</button>
-                <button class="filter-btn hidden" id="tab-admin" onclick="switchTab('admin')">⚙️ Administração</button>
+                <button class="filter-btn hidden" id="tab-admin" onclick="switchTab('admin')">⚙️ Gestão</button>
             </div>
 
-            <!-- CONTEUDO: ACERVO -->
+            <!-- CONTEUDO: INÍCIO (SHELVES) -->
             <div id="content-acervo">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin: 1rem 0;">
-                    <h2 class="page-title" style="margin:0; font-size:1.2rem;">Minha Estante</h2>
-                    <button class="btn btn-secondary btn-sm hidden" id="btn-add-book" onclick="openModal('modal-book')">+ Novo Livro</button>
+                <!-- Shelf: Destaques -->
+                <div class="shelf" id="shelf-highlights">
+                    <div class="shelf-title">
+                        <span>🔥 Destaques</span>
+                    </div>
+                    <div class="shelf-grid" id="grid-highlights">
+                        <!-- Renderizado via JS -->
+                    </div>
                 </div>
-                <div class="books-grid" id="books-grid">
-                    <!-- Livros renderizados aqui -->
+
+                <!-- Shelf: Recentemente Adicionados -->
+                <div class="shelf" id="shelf-recent">
+                    <div class="shelf-title">
+                        <span>🆕 Novas Adições</span>
+                    </div>
+                    <div class="shelf-grid" id="grid-recent">
+                        <!-- Renderizado via JS -->
+                    </div>
                 </div>
-                <div id="books-empty" class="empty-state hidden">
-                    <div class="icon">📖</div>
-                    <p>Nenhum livro encontrado.</p>
+            </div>
+
+            <!-- CONTEUDO: TODO ACERVO (GRID COMPLETO) -->
+            <div id="content-todos" class="hidden">
+                <h2 class="shelf-title">📚 Todo o Acervo</h2>
+                <div class="books-grid-full" id="grid-full">
+                    <!-- Renderizado via JS -->
                 </div>
             </div>
 
@@ -385,9 +456,15 @@
                 <div class="dash-card">
                     <h3>Gerenciamento Global</h3>
                     <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                        <button class="btn btn-primary" onclick="openModal('modal-web-search')">🌐 Buscar Livros na Web</button>
                         <button class="btn btn-secondary" onclick="openModal('modal-all-comments')">💬 Ver Todos os Comentários</button>
                     </div>
                 </div>
+            </div>
+
+            <!-- FAB (ADMIN ONLY) -->
+            <div id="fab-add" class="fab hidden" onclick="openModal('modal-book')" title="Adicionar Livro">
+                <span style="font-size:24px">+</span>
             </div>
         </section>
     </main>
@@ -469,7 +546,28 @@
         </div>
     </div>
 
-     <!-- MODAL TODOS OS COMENTÁRIOS (ADMIN) -->
+     <!-- MODAL BUSCA WEB (ADMIN) -->
+     <div id="modal-web-search" class="modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <button class="close-btn" onclick="closeModal('modal-web-search')">✕</button>
+            <h2 class="page-title" style="margin-top:0.5rem;">🌐 Buscar na Web</h2>
+            <p class="page-subtitle">Pesquise por milhões de livros via Google Books.</p>
+            
+            <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+                <input type="text" id="web-search-query" placeholder="Título, autor ou assunto..." onkeyup="if(event.key==='Enter') searchWebBooks()">
+                <button class="btn btn-primary btn-sm" onclick="searchWebBooks()">Buscar</button>
+            </div>
+
+            <div id="web-search-results" style="max-height: 50vh; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm);">
+                <div class="empty-state">
+                    <p style="font-size:0.85rem;">Os resultados aparecerão aqui.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TODOS OS COMENTÁRIOS (ADMIN) -->
      <div id="modal-all-comments" class="modal">
         <div class="modal-sheet">
             <div class="modal-handle"></div>
@@ -545,9 +643,23 @@
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
         }
 
+        // TEMAS (DARK/LIGHT)
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('lit_theme', target);
+            document.getElementById('theme-toggle').textContent = target === 'dark' ? '☀️' : '🌓';
+        }
+
         // INICIALIZAÇÃO
         window.onload = () => {
             const stored = localStorage.getItem('lit_user');
+            const storedTheme = localStorage.getItem('lit_theme') || 'light';
+            
+            document.documentElement.setAttribute('data-theme', storedTheme);
+            document.getElementById('theme-toggle').textContent = storedTheme === 'dark' ? '☀️' : '🌓';
+
             if (stored) {
                 currentUser = JSON.parse(stored);
                 loadData();
@@ -561,7 +673,6 @@
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('app-loader').classList.remove('hidden');
 
-            // Conecta ao Firebase (Sincronização em Tempo Real)
             db.ref('/').on('value', (snapshot) => {
                 const val = snapshot.val() || {};
                 data.books = val.books || {};
@@ -575,7 +686,6 @@
                 renderBooks();
                 renderDashboard();
                 
-                // Atualiza modal se estiver aberto
                 if(activeBookId && document.getElementById('modal-details').classList.contains('open')){
                     openBookDetails(activeBookId);
                 }
@@ -584,7 +694,6 @@
                 }
             }, (error) => {
                 alert("Erro ao conectar ao banco de dados!");
-                console.error(error);
             });
         }
 
@@ -604,7 +713,6 @@
             if(!name) return alert('Por favor, digite seu nome.');
             if(role === 'admin' && pass !== ADMIN_PASS) return alert('Senha do Professor Incorreta.');
 
-            // Busca único no login
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('app-loader').classList.remove('hidden');
 
@@ -633,40 +741,42 @@
             document.getElementById('drawer-greeting').textContent = currentUser.role === 'admin' ? 'Professor(a)' : 'Aluno(a)';
             document.getElementById('drawer-name').textContent = currentUser.name;
             document.getElementById('drawer-role').textContent = currentUser.role === 'admin' ? 'Gestor do Acervo' : 'Leitor VIP';
-            document.getElementById('drawer-role').style.display = 'inline-block';
 
             let menuHtml = `
-                <button class="drawer-item" onclick="toggleMenu(); switchTab('acervo')"><i>📚</i> Acervo de Livros</button>
+                <button class="drawer-item" onclick="toggleMenu(); switchTab('acervo')"><i>🏠</i> Início</button>
+                <button class="drawer-item" onclick="toggleMenu(); switchTab('todos')"><i>📖</i> Todo o Acervo</button>
             `;
             
             if(currentUser.role === 'admin') {
                 document.getElementById('tab-admin').classList.remove('hidden');
-                document.getElementById('btn-add-book').classList.remove('hidden');
+                document.getElementById('fab-add').classList.remove('hidden');
                 menuHtml += `
-                    <button class="drawer-item" onclick="toggleMenu(); switchTab('admin')"><i>🎓</i> Gerenciar Alunos</button>
+                    <button class="drawer-item" onclick="toggleMenu(); switchTab('admin')"><i>🎓</i> Gestão de Alunos</button>
                     <button class="drawer-item" onclick="toggleMenu(); openModal('modal-all-comments')"><i>💬</i> Fórum Global</button>
                 `;
             } else {
+                document.getElementById('tab-admin').classList.add('hidden');
+                document.getElementById('fab-add').classList.add('hidden');
                 menuHtml += `
                     <button class="drawer-item" onclick="toggleMenu(); switchTab('painel')"><i>📊</i> Meu Desempenho</button>
                 `;
             }
 
             if (deferredPrompt) {
-                menuHtml += `<button class="drawer-item" style="color:var(--primary-mid); font-weight:700;" onclick="installPWA()"><i>📲</i> Instalar Aplicativo</button>`;
+                menuHtml += `<button class="drawer-item" style="color:var(--primary-mid); font-weight:700;" onclick="installPWA()"><i>📲</i> Instalar App</button>`;
             }
             
-            menuHtml += `<button class="drawer-item danger" onclick="logout()"><i>🚪</i> Sair da Conta</button>`;
+            menuHtml += `<button class="drawer-item danger" onclick="logout()"><i>🚪</i> Sair</button>`;
             document.getElementById('drawer-menu').innerHTML = menuHtml;
         }
 
         function switchTab(tab) {
-            // UI Button state
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
+            const tabBtn = document.getElementById('tab-' + tab);
+            if(tabBtn) tabBtn.classList.add('active');
             
-            // View visibility
             document.getElementById('content-acervo').classList.add('hidden');
+            document.getElementById('content-todos').classList.add('hidden');
             document.getElementById('content-painel').classList.add('hidden');
             document.getElementById('content-admin').classList.add('hidden');
             
@@ -674,10 +784,8 @@
         }
 
         function toggleMenu() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('open');
+            document.getElementById('drawer').classList.toggle('open');
+            document.getElementById('drawer-overlay').classList.toggle('open');
         }
 
         function toggleSearch() {
@@ -692,55 +800,57 @@
 
         function handleSearch(val) {
             searchQuery = val.toLowerCase().trim();
+            if(searchQuery) switchTab('todos');
             renderBooks();
         }
 
         // ====== LIVROS ======
         function renderBooks() {
-            const grid = document.getElementById('books-grid');
-            const arr = Object.values(data.books).filter(b => 
+            const allBooks = Object.values(data.books);
+            
+            // Filtro de busca
+            const filtered = allBooks.filter(b => 
                 !searchQuery || 
                 b.title.toLowerCase().includes(searchQuery) || 
                 b.author.toLowerCase().includes(searchQuery)
             );
 
-            if(arr.length === 0) {
-                grid.innerHTML = '';
-                document.getElementById('books-empty').classList.remove('hidden');
-                return;
-            }
-            
-            document.getElementById('books-empty').classList.add('hidden');
-            
-            grid.innerHTML = arr.map(b => {
-                const commentsCount = Object.values(data.comments).filter(c => c.bookId === b.id).length;
-                let adminBtns = '';
-                if(currentUser.role === 'admin'){
-                    adminBtns = `
-                    <div class="admin-controls">
-                        <button class="btn btn-secondary btn-sm" style="flex:1; padding:0.3rem" onclick="event.stopPropagation(); prepareEditBook('${b.id}')">✏️</button>
-                        <button class="btn btn-danger btn-sm" style="flex:1; padding:0.3rem" onclick="event.stopPropagation(); deleteBook('${b.id}')">🗑️</button>
-                    </div>`;
-                }
+            // Renderiza Grid Completo
+            const gridFull = document.getElementById('grid-full');
+            gridFull.innerHTML = filtered.map(b => renderBookCard(b)).join('');
 
-                return `
-                <div class="book-card" onclick="openBookDetails('${b.id}')">
-                    <div class="book-cover-wrap">
-                        ${b.cover ? `<img src="${b.cover}" class="book-cover">` : `<span style="font-size:2rem">📖</span>`}
-                        <div class="book-badge">💬 ${commentsCount}</div>
-                    </div>
-                    <div class="book-info">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
-                            <div style="flex:1;">
-                                <div class="book-title">${b.title}</div>
-                                <div class="book-author">${b.author}</div>
-                            </div>
-                            <div class="book-badge likes">❤️ ${Object.keys(b.likes || {}).length}</div>
-                        </div>
-                        ${adminBtns}
-                    </div>
-                </div>`;
-            }).join('');
+            // Se não houver busca, renderiza as estantes
+            if(!searchQuery) {
+                // Highlights: Livros com mais likes ou fixos (aqui usaremos os 5 mais curtidos)
+                const highlights = [...allBooks].sort((a,b) => {
+                    const lA = Object.keys(a.likes || {}).length;
+                    const lB = Object.keys(b.likes || {}).length;
+                    return lB - lA;
+                }).slice(0, 6);
+                document.getElementById('grid-highlights').innerHTML = highlights.map(b => renderBookCard(b)).join('');
+
+                // Recent: Livros adicionados por último (usaremos o ID como proxy se não tiver timestamp, ou apenas reverse)
+                const recent = [...allBooks].reverse().slice(0, 6);
+                document.getElementById('grid-recent').innerHTML = recent.map(b => renderBookCard(b)).join('');
+            }
+        }
+
+        function renderBookCard(b) {
+            const commentsCount = Object.values(data.comments).filter(c => c.bookId === b.id).length;
+            const likesCount = Object.keys(b.likes || {}).length;
+            
+            return `
+            <div class="book-card" onclick="openBookDetails('${b.id}')">
+                <div class="book-cover-wrap">
+                    ${b.cover ? `<img src="${b.cover}" class="book-cover" loading="lazy">` : `<div class="book-cover" style="display:flex; align-items:center; justify-content:center; font-size:2rem; background:var(--primary-light)">📖</div>`}
+                    <div class="book-badge">💬 ${commentsCount}</div>
+                    ${likesCount > 0 ? `<div class="book-badge" style="top:auto; bottom:0.5rem; background:rgba(239,68,68,0.8)">❤️ ${likesCount}</div>` : ''}
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${b.title}</div>
+                    <div class="book-author">${b.author}</div>
+                </div>
+            </div>`;
         }
 
         function prepareEditBook(id) {
@@ -797,6 +907,17 @@
             const b = data.books[id];
             if(!b) return;
 
+            // Background blur effect
+            let modalSheet = document.querySelector('#modal-details .modal-sheet');
+            let bgBlur = document.getElementById('det-cover-bg');
+            if(!bgBlur) {
+                bgBlur = document.createElement('div');
+                bgBlur.id = 'det-cover-bg';
+                bgBlur.className = 'detail-cover-bg';
+                modalSheet.prepend(bgBlur);
+            }
+            bgBlur.style.backgroundImage = b.cover ? `url(${b.cover})` : 'none';
+
             document.getElementById('det-cover').src = b.cover || '';
             document.getElementById('det-title').textContent = b.title;
             document.getElementById('det-author').textContent = b.author;
@@ -818,32 +939,43 @@
             } else {
                 actionContainer.classList.add('hidden');
                 noPdfNotice.classList.remove('hidden');
-                if(currentUser.role === 'admin') {
-                    btnAdminAdd.classList.remove('hidden');
-                } else {
-                    btnAdminAdd.classList.add('hidden');
-                }
+                btnAdminAdd.classList.toggle('hidden', currentUser.role !== 'admin');
             }
 
             // Topics
             const topicsEl = document.getElementById('det-topics');
             if(b.topics) {
-                topicsEl.innerHTML = `<ul style="padding-left:1.2rem; color:var(--primary-mid); font-weight:500;">
+                topicsEl.innerHTML = `<ul style="padding-left:1.2rem; color:var(--primary-mid); font-weight:600; list-style: none;">
                     ${Object.entries(b.topics).map(([tk, tval]) => `
-                        <li style="margin-bottom:0.4rem;">
-                            ${tval} 
-                            ${currentUser.role==='admin' ? `<span style="font-size:0.8rem; cursor:pointer; color:red; margin-left:1rem" onclick="deleteTopic('${id}','${tk}')">✕</span>` : ''}
+                        <li style="margin-bottom:0.6rem; display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); padding:0.5rem 0.8rem; border-radius:8px;">
+                            <span>🔹 ${tval}</span>
+                            ${currentUser.role==='admin' ? `<span style="font-size:1rem; cursor:pointer; color:var(--danger);" onclick="deleteTopic('${id}','${tk}')">✕</span>` : ''}
                         </li>
                     `).join('')}
                 </ul>`;
             } else {
-                topicsEl.innerHTML = '<p class="detail-author">Nenhum tópico definido.</p>';
+                topicsEl.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Nenhum tópico de discussão definido ainda.</p>';
             }
 
-            if(currentUser.role === 'admin'){
-                document.getElementById('admin-topics-controls').classList.remove('hidden');
+            document.getElementById('admin-topics-controls').classList.toggle('hidden', currentUser.role !== 'admin');
+
+            // Admin Controls for the book itself
+            let adminSection = document.getElementById('det-admin-actions');
+            if(!adminSection) {
+                adminSection = document.createElement('div');
+                adminSection.id = 'det-admin-actions';
+                adminSection.style = 'margin-top: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 1rem;';
+                document.querySelector('#modal-details .modal-sheet').appendChild(adminSection);
+            }
+            
+            if(currentUser.role === 'admin') {
+                adminSection.innerHTML = `
+                    <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-details'); prepareEditBook('${id}')">✏️ Editar Obra</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteBook('${id}')">🗑️ Excluir do Acervo</button>
+                `;
+                adminSection.classList.remove('hidden');
             } else {
-                document.getElementById('admin-topics-controls').classList.add('hidden');
+                adminSection.classList.add('hidden');
             }
 
             // Comments
@@ -852,7 +984,7 @@
             
             let html = '';
             if(parentComments.length === 0){
-                html = '<p class="detail-author">Seja o primeiro a discutir sobre a obra!</p>';
+                html = '<p style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding: 1rem;">Seja o primeiro a discutir sobre a obra!</p>';
             } else {
                 html = parentComments.map(c => renderCommentNode(c, commentsBase, 0)).join('');
             }
@@ -862,9 +994,9 @@
             const btnLike = document.getElementById('btn-like');
             const hasLiked = b.likes && b.likes[currentUser.id];
             btnLike.innerHTML = `Gostei ${hasLiked ? '❤️' : '🤍'}`;
-            btnLike.style.background = hasLiked ? '#fee2e2' : 'var(--surface-hover)';
-            btnLike.style.borderColor = hasLiked ? '#fecaca' : 'var(--border)';
-            btnLike.title = hasLiked ? 'Remover curtida' : 'Curtir este livro';
+            btnLike.style.background = hasLiked ? 'rgba(239,68,68,0.1)' : 'var(--surface-hover)';
+            btnLike.style.borderColor = hasLiked ? 'rgba(239,68,68,0.2)' : 'var(--border)';
+            btnLike.style.color = hasLiked ? 'var(--danger)' : 'var(--text-main)';
             
             openModal('modal-details');
         }
@@ -1079,6 +1211,64 @@
                     <button class="btn btn-danger btn-sm" style="margin-top:0.5rem" onclick="deleteComment('${c.id}')">Remover</button>
                 </div>`;
             }).join('');
+        }
+
+        // ====== WEB SEARCH (GOOGLE BOOKS) ======
+        let webResults = [];
+
+        async function searchWebBooks() {
+            const q = document.getElementById('web-search-query').value.trim();
+            if(!q) return;
+            
+            const list = document.getElementById('web-search-results');
+            list.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&langRestrict=pt&maxResults=10`);
+                const data = await res.json();
+                webResults = data.items || [];
+                
+                if(webResults.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Nenhum resultado encontrado.</div>';
+                    return;
+                }
+                
+                list.innerHTML = webResults.map((item, index) => {
+                    const info = item.volumeInfo;
+                    const cover = info.imageLinks ? info.imageLinks.thumbnail : '';
+                    const title = info.title;
+                    const author = info.authors ? info.authors.join(', ') : 'Autor desconhecido';
+                    
+                    return `
+                    <div class="web-search-item">
+                        <img src="${cover}" class="web-search-cover">
+                        <div class="web-search-info">
+                            <div class="web-search-title">${title}</div>
+                            <div class="web-search-author">${author}</div>
+                        </div>
+                        <button class="web-search-btn" onclick="importBook(${index})">Adicionar</button>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                list.innerHTML = '<div class="empty-state">Erro ao buscar livros na web.</div>';
+            }
+        }
+
+        function importBook(index) {
+            const item = webResults[index];
+            const info = item.volumeInfo;
+            
+            // Abre o modal de cadastro pré-preenchido
+            document.getElementById('modal-book-title').textContent = 'Confirmar Importação';
+            document.getElementById('book-id-edit').value = ''; // Novo livro
+            document.getElementById('book-title').value = info.title || '';
+            document.getElementById('book-author').value = info.authors ? info.authors.join(', ') : '';
+            document.getElementById('book-desc').value = info.description ? info.description.substring(0, 500) + '...' : '';
+            document.getElementById('book-cover').value = info.imageLinks ? info.imageLinks.thumbnail.replace('http:', 'https:') : '';
+            document.getElementById('book-pdf').value = ''; // PDF precisa ser manual
+            
+            closeModal('modal-web-search');
+            openModal('modal-book');
         }
 
         // ====== HELPERS MODAL ======

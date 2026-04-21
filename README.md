@@ -1,30 +1,42 @@
-# 📘 Literosfera (Bibliosfera)
+# 📘 Literosfera 2026 - Versão Pro Max
 
-Literosfera é um aplicativo web premium desenvolvido para facilitar o acesso à leitura e o debate literário em ambientes educativos. Focado na experiência do usuário ("UI Pro Max"), o app permite que alunos e professores organizem um acervo digital, leiam obras online e participem de fóruns de discussão sobre cada título.
+**Literosfera** é uma plataforma de biblioteca digital pedagógica desenvolvida para os alunos de Salinas da Margarida, Bahia. Esta versão "Pro Max" foi turbinada com inspiração no ecossistema Kavita, focando em uma experiência de leitura premium, estética moderna e engajamento literário.
 
-## 🚀 Funcionalidades
-- **Acervo Inteligente**: Organização de livros por título e autor.
-- **Smart Ebook Viewer**: Leitor de PDF integrado em tela cheia com suporte a links do GitHub e preview do Google Drive.
-- **PWA Ready**: Interface responsiva e otimizada para dispositivos móveis.
+## 🚀 Novidades da Versão Pro Max (Kavita Inspired)
 
-## 🛠️ Stack Tecnológica
-- **Frontend**: HTML5, CSS3 (Vanilla com Glassmorphism), JavaScript (ES6+).
-- **Backend/Database**: Firebase Realtime Database para sincronização em tempo real.
-- **Ícones**: Lucide React / Emojis Premium.
+- **Estética UI Pro Max**: Interface limpa com Glassmorphism, sombras suaves e tipografia moderna (Inter & Playfair Display).
+- **Modo Escuro (Dark Mode)**: Suporte nativo a temas claro e escuro para maior conforto na leitura noturna.
+- **Navegação em Estantes (Shelves)**: Organização dinâmica por "Destaques" (mais curtidos) e "Novas Adições", facilitando a descoberta de obras.
+- **Detalhes Imersivos**: Modal de detalhes com efeito de fundo desfocado (blur) baseado na capa do livro.
+- **Fórum Integrado**: Sistema de comentários e tópicos de discussão por obra para estimular o debate pedagógico.
+- **Busca Global**: Aba dedicada para visualizar todo o acervo de forma organizada.
+- **Admin FAB**: Botão flutuante para gestão rápida do acervo por professores.
 
-## 📦 Como Rodar
-1. Clone o repositório ou baixe os arquivos.
-2. Abra o `index.html` em qualquer navegador moderno.
-3. Para acesso administrativo, utilize a senha configurada no código (`januesc025`).
+## 🛠️ Tecnologias Utilizadas
 
-- **UI Pro Max**: Ajustes de animação em modais e cards para maior fluidez.
+- **Frontend**: HTML5, Vanilla CSS3 (Custom Properties), JavaScript (ES6+).
+- **Database/Backend**: Firebase Realtime Database.
+- **API**: Google Books API (para importação automática de metadados).
+- **PWA**: Suporte a Progressive Web App (Offline-ready, Instalável).
 
-## 📝 Changelog (v1.2.0)
-- **Smart Ebook Reader**: Implementação de visualizador de PDF interno em tela cheia.
-- **GitHub Compatibility**: Suporte automático para links do GitHub (conversão para raw).
-- **Aviso de Bloqueio**: Sistema de detecção de links do Google Drive com aviso sobre restrições de preview.
-- **Correção de Links**: Melhoria na detecção de pastas vs arquivos para leitura online.
+## 📖 Como Usar
+
+1. **Login**: Entre com seu nome. Professores usam a senha mestre (`januesc025`) para acessar ferramentas de gestão.
+2. **Explorar**: Use a aba "Início" para ver os destaques ou "Todo Acervo" para buscar títulos específicos.
+3. **Ler**: Clique em um livro e selecione "Ler Agora" para abrir o visualizador inteligente.
+4. **Participar**: Deixe sua opinião nos comentários ou curta suas obras favoritas para que elas apareçam nos destaques.
+
+## 🛠️ Gestão (Professor)
+
+- **Adicionar Livros**: Use o botão flutuante (+) ou a busca web integrada.
+- **Tópicos**: Crie tópicos de discussão específicos para cada obra para guiar os alunos.
+- **Moderação**: Exclua comentários inadequados ou remova alunos se necessário.
+
+## 📝 Changelog (v3.0.0 - Kavita Inspired)
+- **UI Rewrite**: Migração para um design focado em "shelves" horizontais.
+- **Theming**: Adicionado alternador de tema Claro/Escuro persistente.
+- **UX**: Botão Flutuante (FAB) para ações rápidas do admin.
+- **Visuals**: Efeito de desfoque dinâmico em modais baseado nas capas.
 
 ---
-Desenvolvido por **Antigravity** para **Sérgio (Vibe Coder)**.
-Salinas da Margarida, Bahia, Brasil.
+*Desenvolvido com ❤️ para a Educação de Salinas da Margarida - 2026.*
