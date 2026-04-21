@@ -1130,30 +1130,48 @@
 
             if(epubBook) {
                 epubBook.destroy();
+                document.getElementById('epub-viewer').innerHTML = '<div class="epub-controls"><button class="epub-nav-btn" onclick="epubPrev()">‹</button><div style="display: flex; flex-direction: column; align-items: center;"><div class="epub-settings"><button onclick="epubZoom(-10)">A-</button><button onclick="epubZoom(10)">A+</button></div><span id="epub-progress" style="color: white; font-size: 0.7rem; font-weight: 700; text-shadow: 0 1px 2px black;">Carregando...</span></div><button class="epub-nav-btn" onclick="epubNext()">›</button></div>';
             }
 
             try {
-                // Se for github normal, converte para raw para o epub.js conseguir baixar
-                if(url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
-                    url = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+                // Limpeza e normalização da URL
+                let cleanUrl = url.trim();
+                
+                // Conversão de links do GitHub para RAW
+                if(cleanUrl.includes('github.com') && !cleanUrl.includes('raw.githubusercontent.com')) {
+                    cleanUrl = cleanUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
                 }
 
-                epubBook = ePub(url);
-                epubRendition = epubBook.renderTo("epub-viewer", {
-                    width: "100%",
-                    height: "100%",
-                    flow: "paginated",
-                    manager: "default"
-                });
-
-                await epubRendition.display();
+                // Tenta carregar diretamente primeiro
+                try {
+                    epubBook = ePub(cleanUrl);
+                    epubRendition = epubBook.renderTo("epub-viewer", {
+                        width: "100%",
+                        height: "100%",
+                        flow: "paginated",
+                        manager: "default"
+                    });
+                    await epubRendition.display();
+                } catch (err) {
+                    console.warn("Falha no carregamento direto, tentando via Proxy CORS...", err);
+                    // Se falhar (provavelmente CORS), tenta via proxy
+                    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
+                    epubBook = ePub(proxyUrl);
+                    epubRendition = epubBook.renderTo("epub-viewer", {
+                        width: "100%",
+                        height: "100%",
+                        flow: "paginated",
+                        manager: "default"
+                    });
+                    await epubRendition.display();
+                }
                 
                 epubRendition.on("relocated", (location) => {
                     const percent = Math.round(location.start.percentage * 100);
                     document.getElementById('epub-progress').textContent = `${percent}% concluído`;
                 });
 
-                // Aplica tema atual (tentativa simples)
+                // Aplica tema atual
                 const theme = document.documentElement.getAttribute('data-theme');
                 if(theme === 'dark') {
                     epubRendition.themes.register("dark", { body: { background: "#0f172a", color: "#f8fafc" } });
@@ -1161,8 +1179,8 @@
                 }
 
             } catch (e) {
-                console.error(e);
-                alert("Erro ao carregar o arquivo EPUB. Verifique se o link é válido e permite acesso direto.");
+                console.error("Erro final no EPUB:", e);
+                alert("Não foi possível carregar o EPUB. Isso geralmente acontece por restrições do site onde o arquivo está hospedado (CORS) ou caracteres especiais no nome do arquivo. \n\nDica: Tente renomear o arquivo para algo simples (ex: livro.epub) ou use o Google Drive.");
                 closeViewer();
             }
         }
