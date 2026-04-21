@@ -7,7 +7,9 @@
 - **Estética UI Pro Max**: Interface limpa com Glassmorphism, sombras suaves e tipografia moderna (Inter & Playfair Display).
 - **Modo Escuro (Dark Mode)**: Suporte nativo a temas claro e escuro para maior conforto na leitura noturna.
 - **Navegação em Estantes (Shelves)**: Organização dinâmica por "Destaques" (mais curtidos) e "Novas Adições", facilitando a descoberta de obras.
-- **Detalhes Imersivos**: Modal de detalhes com efeito de fundo desfocado (blur) baseado na capa do livro.
+- **Suporte a EPUB e PDF**: Visualizador inteligente que detecta o formato do arquivo e oferece a melhor experiência (via `epub.js` para EPUBs e iframe nativo para PDFs).
+- **Leitura Imersiva**: Controles de navegação (Próximo/Anterior), ajuste de tamanho de fonte e progresso de leitura para arquivos EPUB.
+- **Destaques Imersivos**: Modal de detalhes com efeito de fundo desfocado (blur) baseado na capa do livro.
 - **Fórum Integrado**: Sistema de comentários e tópicos de discussão por obra para estimular o debate pedagógico.
 - **Busca Global**: Aba dedicada para visualizar todo o acervo de forma organizada.
 - **Admin FAB**: Botão flutuante para gestão rápida do acervo por professores.

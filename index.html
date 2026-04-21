@@ -12,6 +12,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
 
+    <!-- EPUB Reader Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -311,6 +315,26 @@
         .viewer-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
         .btn-raw { background: #92400e; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 0.75rem; }
 
+        /* EPUB SPECIFIC */
+        #epub-viewer { flex: 1; background: white; overflow: hidden; position: relative; }
+        .epub-controls {
+            position: absolute; bottom: 2rem; left: 0; width: 100%;
+            display: flex; justify-content: center; gap: 1rem; z-index: 10;
+        }
+        .epub-nav-btn {
+            background: rgba(0,0,0,0.6); color: white; border: none; width: 50px; height: 50px;
+            border-radius: 50%; font-size: 1.5rem; cursor: pointer; backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .epub-nav-btn:hover { background: var(--primary); transform: scale(1.1); }
+        .epub-nav-btn:active { transform: scale(0.9); }
+        
+        .epub-settings {
+            display: flex; gap: 1rem; align-items: center; background: rgba(0,0,0,0.8);
+            padding: 0.5rem 1rem; border-radius: 2rem; margin-bottom: 0.5rem;
+        }
+        .epub-settings button { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; }
+
         /* WEB SEARCH STYLES */
         .web-search-item {
             display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border);
@@ -596,6 +620,19 @@
         </div>
         <div class="viewer-iframe-container">
             <iframe id="viewer-iframe" class="viewer-iframe" src="about:blank"></iframe>
+            <div id="epub-viewer" class="hidden">
+                <div class="epub-controls">
+                    <button class="epub-nav-btn" onclick="epubPrev()">‹</button>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="epub-settings">
+                            <button onclick="epubZoom(-10)">A-</button>
+                            <button onclick="epubZoom(10)">A+</button>
+                        </div>
+                        <span id="epub-progress" style="color: white; font-size: 0.7rem; font-weight: 700; text-shadow: 0 1px 2px black;">Carregando...</span>
+                    </div>
+                    <button class="epub-nav-btn" onclick="epubNext()">›</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1018,28 +1055,38 @@
             }
         }
 
-        function readOnline() {
+        // ====== LEITURA (PDF & EPUB) ======
+        let epubBook = null;
+        let epubRendition = null;
+        let epubFontSize = 100;
+
+        async function readOnline() {
             if(!activeBookId) return;
             const b = data.books[activeBookId];
             if(b && b.pdfUrl) {
                 let url = b.pdfUrl;
+                const isEpub = url.toLowerCase().includes('.epub');
                 const isDrive = url.includes('drive.google.com');
                 const isGithub = url.includes('github.com');
                 
                 document.getElementById('viewer-title').textContent = b.title;
                 document.getElementById('viewer-raw-link').href = url;
                 
-                let viewUrl = url;
+                if(isEpub) {
+                    initEpub(url);
+                    return;
+                }
 
-                // Lógica de visualização
+                // Lógica de PDF (Iframe)
+                document.getElementById('epub-viewer').classList.add('hidden');
+                document.getElementById('viewer-iframe').classList.remove('hidden');
+                
+                let viewUrl = url;
                 if(isDrive) {
-                    // Se for link de pasta ou compartilhamento geral sem ID de arquivo direto
                     if(url.includes('/drive/folders/') || url.includes('/drive/u/0/folders/')){
                          window.open(url, '_blank');
                          return;
                     }
-                    
-                    // Tenta converter para preview se for link de arquivo
                     if(url.includes('/file/d/')){
                         viewUrl = url.split('/view')[0].split('?')[0].split('/edit')[0] + '/preview';
                         document.getElementById('viewer-warning').classList.remove('hidden');
@@ -1053,7 +1100,6 @@
                         viewUrl = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
                     }
                     document.getElementById('viewer-warning').classList.add('hidden');
-                    document.getElementById('viewer-raw-link').textContent = '🔗 Ver PDF no GitHub (Raw)';
                 } else {
                     document.getElementById('viewer-warning').classList.add('hidden');
                 }
@@ -1064,9 +1110,70 @@
             }
         }
 
+        async function initEpub(url) {
+            document.getElementById('viewer-iframe').classList.add('hidden');
+            document.getElementById('epub-viewer').classList.remove('hidden');
+            document.getElementById('viewer-warning').classList.add('hidden');
+            document.getElementById('modal-viewer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('epub-progress').textContent = 'Carregando livro...';
+
+            if(epubBook) {
+                epubBook.destroy();
+            }
+
+            try {
+                // Se for github normal, converte para raw para o epub.js conseguir baixar
+                if(url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
+                    url = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+                }
+
+                epubBook = ePub(url);
+                epubRendition = epubBook.renderTo("epub-viewer", {
+                    width: "100%",
+                    height: "100%",
+                    flow: "paginated",
+                    manager: "default"
+                });
+
+                await epubRendition.display();
+                
+                epubRendition.on("relocated", (location) => {
+                    const percent = Math.round(location.start.percentage * 100);
+                    document.getElementById('epub-progress').textContent = `${percent}% concluído`;
+                });
+
+                // Aplica tema atual (tentativa simples)
+                const theme = document.documentElement.getAttribute('data-theme');
+                if(theme === 'dark') {
+                    epubRendition.themes.register("dark", { body: { background: "#0f172a", color: "#f8fafc" } });
+                    epubRendition.themes.select("dark");
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert("Erro ao carregar o arquivo EPUB. Verifique se o link é válido e permite acesso direto.");
+                closeViewer();
+            }
+        }
+
+        function epubPrev() { if(epubRendition) epubRendition.prev(); }
+        function epubNext() { if(epubRendition) epubRendition.next(); }
+        function epubZoom(delta) {
+            if(!epubRendition) return;
+            epubFontSize += delta;
+            if(epubFontSize < 50) epubFontSize = 50;
+            if(epubFontSize > 200) epubFontSize = 200;
+            epubRendition.themes.fontSize(`${epubFontSize}%`);
+        }
+
         function closeViewer() {
             document.getElementById('modal-viewer').classList.remove('open');
             document.getElementById('viewer-iframe').src = 'about:blank';
+            if(epubBook) {
+                epubBook.destroy();
+                epubBook = null;
+            }
             document.body.style.overflow = '';
         }
 
